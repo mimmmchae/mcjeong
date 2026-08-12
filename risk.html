@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>위험성평가 자동화 · 위험성평가 포털</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --ink:#101a29; --ink-soft:#28394f;
+    --paper:#f5f6f3; --paper-alt:#eceee9; --card:#ffffff;
+    --steel:#5c6773; --line:#dcdfd9;
+    --amber:#ee9f2e; --amber-dark:#c97f1e;
+    --r1:#4c9a6a; --r2:#93b23f; --r3:#e3bd3f; --r4:#e2833a; --r5:#bf3327;
+    --serif-display:"Pretendard","Noto Sans KR",sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--serif-display); background:var(--paper); color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none; margin:0; padding:0;}
+  button{font-family:inherit; cursor:pointer;}
+  input, select, textarea{font-family:inherit;}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--amber-dark); font-weight:600; display:inline-flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; background:var(--amber); display:inline-block; border-radius:1px; transform:rotate(45deg);}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+
+  /* Header */
+  header.site-header{position:sticky; top:0; z-index:100; background:rgba(245,246,243,0.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-0.01em;}
+  .logo .logo-sub{font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:500; display:block; margin-top:1px;}
+  nav.nav-menu{display:flex; align-items:center; gap:2px;}
+  nav.nav-menu a{position:relative; padding:10px 18px; font-size:15px; font-weight:600; color:var(--ink-soft); border-radius:8px; transition:color .2s ease, background .2s ease;}
+  nav.nav-menu a:hover{color:var(--ink); background:rgba(16,26,41,0.05);}
+  nav.nav-menu a.active{color:var(--ink);}
+  nav.nav-menu a.active::after{content:""; position:absolute; left:18px; right:18px; bottom:5px; height:2px; background:var(--amber); border-radius:2px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:11px 20px; font-size:14px; font-weight:700; border-radius:9px; border:1px solid transparent; transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; white-space:nowrap;}
+  .btn-primary{background:var(--ink); color:#fdfaf3;}
+  .btn-primary:hover{background:var(--amber-dark); transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(201,127,30,0.6);}
+  .btn-ghost{border-color:var(--line); color:var(--ink-soft); background:transparent;}
+  .btn-ghost:hover{border-color:var(--ink-soft); color:var(--ink);}
+  .btn:disabled{opacity:0.5; cursor:not-allowed; transform:none !important; box-shadow:none !important;}
+
+  /* Page head */
+  .page-head{padding:52px 0 36px; border-bottom:1px solid var(--line);}
+  .page-head h1{font-size:clamp(26px,3.4vw,36px); margin:16px 0 10px; letter-spacing:-0.01em; font-weight:800;}
+  .page-head p{color:var(--steel); font-size:15.5px; max-width:64ch; margin:0;}
+
+  .notice{
+    margin-top:22px; padding:14px 16px; background:#fff8ea; border:1px solid #f0d9a8;
+    border-radius:10px; font-size:13px; color:#8a5a10; display:flex; gap:10px; align-items:flex-start;
+  }
+  .notice svg{flex-shrink:0; margin-top:2px;}
+
+  /* Sections */
+  section{padding:44px 0; border-bottom:1px solid var(--line);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px;}
+  .card + .card{margin-top:18px;}
+  .card h2{font-size:16px; margin:0 0 4px; font-weight:700; display:flex; align-items:center; gap:10px;}
+  .card h2 .step-badge{
+    width:24px; height:24px; border-radius:7px; background:var(--ink); color:#fff;
+    font-family:var(--mono); font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:700;
+  }
+  .card .card-desc{font-size:13.5px; color:var(--steel); margin:0 0 18px;}
+
+  .field-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:14px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--ink-soft);}
+  .field input, .field select{
+    padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:13.5px; background:var(--paper);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--amber); outline-offset:1px;}
+
+  .key-row{display:grid; grid-template-columns:1fr 200px auto; gap:12px; align-items:end;}
+  .key-status{font-family:var(--mono); font-size:11.5px; margin-top:8px; color:var(--steel);}
+  .key-status.ok{color:var(--r1);}
+
+  /* Dropzone */
+  .dropzone{
+    border:2px dashed var(--line); border-radius:12px; padding:38px 20px;
+    text-align:center; color:var(--steel); font-size:14px;
+    transition:border-color .2s ease, background .2s ease;
+    cursor:pointer;
+  }
+  .dropzone.dragover{border-color:var(--amber); background:#fff8ea;}
+  .dropzone b{color:var(--ink);}
+  .dropzone input{display:none;}
+
+  .photo-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:12px; margin-top:16px;}
+  .photo-chip{
+    position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--line);
+    background:var(--paper-alt); aspect-ratio:4/3;
+  }
+  .photo-chip img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo-chip .rm{
+    position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:6px;
+    background:rgba(16,26,41,0.72); color:#fff; border:none; display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+  }
+  .photo-chip .status{
+    position:absolute; bottom:0; left:0; right:0; padding:5px 8px; font-family:var(--mono); font-size:10px;
+    background:rgba(16,26,41,0.72); color:#fff;
+  }
+  .photo-chip.analyzing .status{background:rgba(201,127,30,0.85);}
+  .photo-chip.done .status{background:rgba(76,154,106,0.85);}
+  .photo-chip.error .status{background:rgba(191,51,39,0.85);}
+
+  .context-field{margin-top:16px;}
+  .context-field textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:13.5px;
+    background:var(--paper); resize:vertical; min-height:56px;
+  }
+
+  .action-row{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; align-items:center;}
+  .spinner{
+    width:15px; height:15px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%;
+    animation:spin .7s linear infinite; display:inline-block;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .progress-note{font-family:var(--mono); font-size:12px; color:var(--steel);}
+
+  /* Matrix (compact reused component) */
+  .matrix-wrap{display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start;}
+  .matrix-card{flex:0 0 auto;}
+  .matrix-body{display:grid; grid-template-columns:24px 1fr; gap:8px;}
+  .matrix-yaxis{display:grid; grid-template-rows:repeat(4,1fr); gap:5px;}
+  .matrix-yaxis span{display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:600;}
+  .matrix-main{display:flex; flex-direction:column; gap:6px;}
+  .matrix-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:5px;}
+  .cell{
+    width:40px; height:40px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:11px; font-weight:700; color:rgba(255,255,255,0.95); position:relative;
+  }
+  .cell .cnt{
+    position:absolute; top:-6px; right:-6px; min-width:16px; height:16px; border-radius:8px; background:var(--ink);
+    color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; padding:0 3px; display:none;
+  }
+  .cell.has .cnt{display:flex;}
+  .matrix-xaxis{display:grid; grid-template-columns:repeat(5,1fr); gap:5px;}
+  .matrix-xaxis span{text-align:center; font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:600;}
+  .axis-label{font-size:10px; font-family:var(--mono); color:var(--steel); letter-spacing:0.06em; margin-top:4px; text-align:center;}
+  .criteria-tables{flex:1; min-width:260px; display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .criteria-table h4{font-size:12px; margin:0 0 8px; font-weight:700; color:var(--ink-soft);}
+  .criteria-table table{width:100%; border-collapse:collapse; font-size:11.5px;}
+  .criteria-table td{padding:5px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .criteria-table td:first-child{font-family:var(--mono); font-weight:700; width:22px; color:var(--ink);}
+  .criteria-table td:last-child{color:var(--steel);}
+
+  /* Results table */
+  .table-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:12px;}
+  table.results{width:100%; border-collapse:collapse; min-width:1080px; background:var(--card);}
+  table.results th{
+    background:var(--paper-alt); font-size:11.5px; font-weight:700; text-align:left; padding:10px 10px;
+    border-bottom:1px solid var(--line); white-space:nowrap; color:var(--ink-soft); font-family:var(--mono); letter-spacing:0.02em;
+  }
+  table.results td{padding:8px 10px; border-bottom:1px solid var(--line); font-size:13px; vertical-align:top;}
+  table.results tr:last-child td{border-bottom:none;}
+  table.results img.thumb{width:56px; height:42px; object-fit:cover; border-radius:6px; display:block;}
+  table.results input[type=text], table.results textarea, table.results input[type=date]{
+    width:100%; border:1px solid transparent; border-radius:6px; padding:6px 7px; font-size:12.5px; background:transparent; resize:vertical;
+  }
+  table.results input[type=text]:hover, table.results textarea:hover, table.results input[type=date]:hover{border-color:var(--line); background:var(--paper);}
+  table.results input[type=text]:focus, table.results textarea:focus, table.results input[type=date]:focus{border-color:var(--amber); background:#fff; outline:none;}
+  table.results select{border:1px solid var(--line); border-radius:6px; padding:5px 6px; font-size:12.5px; background:var(--paper); font-family:var(--mono); font-weight:700;}
+  .score-badge{
+    display:inline-flex; align-items:center; justify-content:center; min-width:34px; padding:4px 8px; border-radius:7px;
+    font-family:var(--mono); font-weight:700; font-size:12px; color:#fff;
+  }
+  .del-row{width:26px; height:26px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--steel); font-size:13px;}
+  .del-row:hover{border-color:var(--r5); color:var(--r5);}
+  .empty-state{padding:40px 20px; text-align:center; color:var(--steel); font-size:13.5px;}
+
+  .table-actions{display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:10px;}
+  .export-actions{display:flex; gap:10px; flex-wrap:wrap;}
+
+  footer{padding:32px 0;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  footer p{margin:0; font-size:12.5px; color:var(--steel);}
+
+  /* Print report (hidden until printing) */
+  #printReport{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #printReport, #printReport *{visibility:visible;}
+    #printReport{display:block; position:absolute; top:0; left:0; width:100%; padding:20px;}
+    #printReport h1{font-size:20px; margin-bottom:4px;}
+    #printReport .meta{font-size:12px; color:#333; margin-bottom:16px; display:flex; gap:18px;}
+    #printReport table{width:100%; border-collapse:collapse; font-size:10.5px;}
+    #printReport th, #printReport td{border:1px solid #999; padding:5px 6px; text-align:left;}
+    #printReport th{background:#eee;}
+  }
+
+  @media (max-width: 900px){
+    .field-row{grid-template-columns:1fr 1fr;}
+    .key-row{grid-template-columns:1fr;}
+    .criteria-tables{grid-template-columns:1fr;}
+  }
+  @media (max-width: 640px){
+    .field-row{grid-template-columns:1fr;}
+    nav.nav-menu{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="index.html" class="logo">
+      <span>위험성평가 포털<span class="logo-sub">RISK ASSESSMENT SYSTEM</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="index.html">홈</a>
+      <a href="automation.html" class="active">위험성평가 자동화</a>
+      <a href="index.html#board">게시판</a>
+    </nav>
+    <a href="index.html" class="btn btn-ghost">포털로 돌아가기</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="page-head">
+    <span class="eyebrow">AI 현장사진 기반 · 빈도강도법(5×4)</span>
+    <h1>사진 한 장으로 위험성평가표 만들기</h1>
+    <p>현장 사진을 올리면 AI가 사진 속 유해위험요인을 찾아 빈도×강도 점수를 제안합니다. 결과는 표에서 직접 검토·수정한 뒤 엑셀 또는 PDF로 저장하세요.</p>
+    <div class="notice">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 14H1L8 1Z" stroke="#8a5a10" stroke-width="1.3" stroke-linejoin="round"/><rect x="7.3" y="6" width="1.4" height="4" fill="#8a5a10"/><rect x="7.3" y="11" width="1.4" height="1.4" fill="#8a5a10"/></svg>
+      <span>AI가 제안하는 점수와 위험요인은 <b>초안</b>입니다. 법정 위험성평가 문서로 사용하기 전 반드시 안전담당자가 현장 여건에 맞게 검토·확정하세요. 이 페이지는 코드 안에 API 키를 직접 넣어 사용하는 방식이므로, 반드시 <b>Private 저장소</b>로 관리하세요.</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: PHOTO UPLOAD -->
+  <section>
+    <div class="card">
+      <h2><span class="step-badge">1</span>현장 사진 업로드</h2>
+      <p class="card-desc">여러 장을 한 번에 올릴 수 있습니다. 작업/공정 설명을 함께 입력하면 분석 정확도가 높아집니다.</p>
+      <div class="dropzone" id="dropzone">
+        <b>클릭하여 사진 선택</b> 또는 여기로 드래그하세요 (JPG, PNG)
+        <input type="file" id="fileInput" accept="image/*" multiple>
+      </div>
+      <div class="context-field">
+        <label style="font-size:12.5px; font-weight:600; color:var(--ink-soft);">작업/공정 설명 (선택)</label>
+        <textarea id="contextInput" placeholder="예: 철근 자재 크레인 인양 및 하역 작업"></textarea>
+      </div>
+      <div class="photo-grid" id="photoGrid"></div>
+      <div class="action-row">
+        <button class="btn btn-primary" id="analyzeBtn" disabled>AI 위험성평가 실행</button>
+        <span class="progress-note" id="progressNote"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="step-badge">·</span>빈도강도법 판정 기준 (5×4)</h2>
+      <p class="card-desc">위험성 점수 = 빈도 × 강도 (최대 20점). 아래 기준은 참고용이며 사업장 자체 기준으로 조정할 수 있습니다.</p>
+      <div class="matrix-wrap">
+        <div class="matrix-card">
+          <div class="matrix-body">
+            <div class="matrix-yaxis" id="matrixYAxis"></div>
+            <div class="matrix-main">
+              <div class="matrix-grid" id="matrixGrid"></div>
+              <div class="matrix-xaxis" id="matrixXAxis"></div>
+              <div class="axis-label">가능성(빈도) →</div>
+            </div>
+          </div>
+        </div>
+        <div class="criteria-tables">
+          <div class="criteria-table">
+            <h4>강도 (중대성) — 1~4</h4>
+            <table>
+              <tr><td>1</td><td>경미 — 응급처치 수준, 휴업 없음</td></tr>
+              <tr><td>2</td><td>보통 — 병원 치료 필요, 단기 휴업</td></tr>
+              <tr><td>3</td><td>중대 — 신체 일부 장애, 장기 휴업</td></tr>
+              <tr><td>4</td><td>치명적 — 사망 또는 중대재해</td></tr>
+            </table>
+          </div>
+          <div class="criteria-table">
+            <h4>빈도 (가능성) — 1~5</h4>
+            <table>
+              <tr><td>1</td><td>거의 발생하지 않음 (연 1회 미만)</td></tr>
+              <tr><td>2</td><td>발생 가능성 낮음 (연 1회 정도)</td></tr>
+              <tr><td>3</td><td>가끔 발생 (분기 1회 정도)</td></tr>
+              <tr><td>4</td><td>자주 발생 (월 1회 정도)</td></tr>
+              <tr><td>5</td><td>매우 빈번 (상시 발생 가능)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: RESULTS -->
+  <section>
+    <div class="field-row">
+      <div class="field"><label>사업장명</label><input type="text" id="metaSite" placeholder="예: OO건설 △△현장"></div>
+      <div class="field"><label>평가일</label><input type="date" id="metaDate"></div>
+      <div class="field"><label>평가자</label><input type="text" id="metaAssessor" placeholder="예: 홍길동"></div>
+      <div class="field"><label>부서/공정</label><input type="text" id="metaDept" placeholder="예: 토목1팀"></div>
+    </div>
+
+    <h2 style="display:flex; align-items:center; gap:10px; font-size:16px; margin:0 0 14px;"><span class="step-badge">2</span>위험성평가표</h2>
+    <div class="table-scroll">
+      <table class="results" id="resultsTable">
+        <thead>
+          <tr>
+            <th>No</th><th>사진</th><th style="min-width:180px;">위험요인</th><th style="min-width:120px;">관련작업</th>
+            <th>빈도</th><th>강도</th><th>점수</th><th>등급</th>
+            <th style="min-width:180px;">감소대책</th><th style="min-width:90px;">담당자</th><th style="min-width:120px;">완료예정일</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState">아직 평가 항목이 없습니다. 사진을 업로드하고 AI 분석을 실행하거나, 직접 행을 추가하세요.</div>
+    </div>
+    <div class="table-actions">
+      <button class="btn btn-ghost" id="addRowBtn">+ 행 직접 추가</button>
+      <div class="export-actions">
+        <button class="btn btn-ghost" id="exportExcelBtn">엑셀 다운로드 (.xlsx)</button>
+        <button class="btn btn-primary" id="exportPdfBtn">PDF로 저장</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 위험성평가 포털. AI 분석 결과는 참고용 초안이며 최종 확정 전 반드시 검토가 필요합니다.</p>
+  </div>
+</footer>
+
+<!-- Hidden print report, filled dynamically before window.print() -->
+<div id="printReport">
+  <h1>위험성평가표</h1>
+  <div class="meta" id="printMeta"></div>
+  <table id="printTable">
+    <thead>
+      <tr><th>No</th><th>위험요인</th><th>관련작업</th><th>빈도</th><th>강도</th><th>점수</th><th>등급</th><th>감소대책</th><th>담당자</th><th>완료예정일</th></tr>
+    </thead>
+    <tbody id="printBody"></tbody>
+  </table>
+</div>
+
+<script>
+  /* ---------------- Config ----------------
+     아래 apiKey에 console.anthropic.com에서 발급받은 키를 직접 붙여넣으세요.
+     이 파일을 그대로 공개 GitHub 저장소에 올리면 키가 그대로 노출되니,
+     반드시 Private 저장소로 관리하거나 배포 전 값을 채워 넣어 사용하세요. */
+  const CONFIG = {
+    apiKey: '',                 // 예: 'sk-ant-api03-xxxx...'
+    model: 'claude-sonnet-5'    // claude-sonnet-5 / claude-haiku-4-5-20251001 / claude-opus-4-8
+  };
+
+  /* ---------------- State ---------------- */
+  let photos = [];   // {id, name, dataUrl, base64, mediaType, status}
+  let hazards = [];  // {id, thumb, hazard, task, frequency, severity, measures, owner, dueDate}
+  let hazardSeq = 1;
+
+  const gradeInfo = (score) => {
+    if(score <= 3)  return {label:'낮음',    cls:'r1'};
+    if(score <= 8)  return {label:'보통',    cls:'r2'};
+    if(score <= 14) return {label:'높음',    cls:'r4'};
+    return {label:'매우높음', cls:'r5'};
+  };
+
+  /* ---------------- Photo upload ---------------- */
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const photoGrid = document.getElementById('photoGrid');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const progressNote = document.getElementById('progressNote');
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropzone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+  function handleFiles(fileList){
+    Array.from(fileList).forEach(file => {
+      if(!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const base64 = dataUrl.split(',')[1];
+        const photo = { id:'p'+Date.now()+Math.random().toString(36).slice(2,7), name:file.name, dataUrl, base64, mediaType:file.type, status:'ready' };
+        photos.push(photo);
+        renderPhotos();
+        analyzeBtn.disabled = photos.length === 0;
+      };
+      reader.readAsDataURL(file);
+    });
+    fileInput.value = '';
+  }
+
+  function renderPhotos(){
+    photoGrid.innerHTML = '';
+    photos.forEach(p => {
+      const chip = document.createElement('div');
+      chip.className = 'photo-chip ' + (p.status !== 'ready' ? p.status : '');
+      chip.innerHTML = `
+        <img src="${p.dataUrl}" alt="${p.name}">
+        <button class="rm" data-id="${p.id}">✕</button>
+        <div class="status">${statusLabel(p.status)}</div>
+      `;
+      photoGrid.appendChild(chip);
+    });
+    photoGrid.querySelectorAll('.rm').forEach(btn => {
+      btn.addEventListener('click', () => {
+        photos = photos.filter(p => p.id !== btn.dataset.id);
+        renderPhotos();
+        analyzeBtn.disabled = photos.length === 0;
+      });
+    });
+  }
+  function statusLabel(s){
+    if(s==='analyzing') return '분석 중…';
+    if(s==='done') return '분석 완료';
+    if(s==='error') return '분석 실패';
+    return '대기 중';
+  }
+
+  /* ---------------- AI analysis ---------------- */
+  analyzeBtn.addEventListener('click', analyzeAll);
+
+  async function analyzeAll(){
+    if(!CONFIG.apiKey){ alert('automation.html 상단 CONFIG.apiKey 값을 채운 뒤 사용해주세요.'); return; }
+    analyzeBtn.disabled = true;
+    analyzeBtn.innerHTML = '<span class="spinner"></span> 분석 중...';
+
+    let done = 0;
+    for(const photo of photos){
+      if(photo.status === 'done') { done++; continue; }
+      photo.status = 'analyzing'; renderPhotos();
+      progressNote.textContent = `${done+1} / ${photos.length} 장 분석 중...`;
+      try{
+        const results = await analyzePhoto(photo, CONFIG.apiKey, CONFIG.model);
+        results.forEach(r => addHazard(photo, r));
+        photo.status = 'done';
+      }catch(err){
+        console.error(err);
+        photo.status = 'error';
+      }
+      done++;
+      renderPhotos();
+    }
+    progressNote.textContent = `완료: ${photos.length}장 중 ${photos.filter(p=>p.status==='done').length}장 분석 성공`;
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = 'AI 위험성평가 실행';
+    renderResults();
+  }
+
+  async function analyzePhoto(photo, apiKey, model){
+    const context = document.getElementById('contextInput').value.trim();
+    const prompt = `아래 이미지는 산업현장 사진입니다. 이미지에서 식별되는 유해위험요인을 모두 찾아 빈도강도법(빈도 1~5 × 강도 1~4)에 따라 위험성을 평가하세요.
+
+[강도 기준]
+1: 경미 - 응급처치 수준, 휴업 없음
+2: 보통 - 병원 치료 필요, 단기 휴업
+3: 중대 - 신체 일부 장애, 장기 휴업
+4: 치명적 - 사망 또는 중대재해
+
+[빈도 기준]
+1: 거의 발생하지 않음(연 1회 미만)
+2: 발생 가능성 낮음(연 1회 정도)
+3: 가끔 발생(분기 1회 정도)
+4: 자주 발생(월 1회 정도)
+5: 매우 빈번함(상시 발생 가능)
+
+작업/공정 설명(참고, 없으면 무시): ${context || '제공되지 않음'}
+
+사진에서 확인되는 위험요인마다 하나의 객체로 만들어 아래 JSON 배열 형식으로만 응답하세요. 코드블록이나 다른 설명 문구는 포함하지 마세요.
+[
+  {"hazard":"위험요인 설명", "task":"관련 작업명", "frequency":정수 1~5, "severity":정수 1~4, "measures":"감소대책 제안"}
+]
+위험요인이 명확히 보이지 않으면 빈 배열 []을 반환하세요. 최대 5개까지만 제시하세요.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 1500,
+        messages: [{
+          role:'user',
+          content:[
+            { type:'image', source:{ type:'base64', media_type: photo.mediaType, data: photo.base64 } },
+            { type:'text', text: prompt }
+          ]
+        }]
+      })
+    });
+
+    if(!response.ok){
+      const errText = await response.text();
+      throw new Error('API 오류 ' + response.status + ': ' + errText);
+    }
+    const data = await response.json();
+    const textBlock = (data.content || []).find(c => c.type === 'text');
+    if(!textBlock) return [];
+    let raw = textBlock.text.trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+    let parsed;
+    try{ parsed = JSON.parse(raw); }catch(e){ console.error('JSON 파싱 실패', raw); return []; }
+    if(!Array.isArray(parsed)) return [];
+    return parsed.filter(x => x && x.hazard);
+  }
+
+  function addHazard(photo, r){
+    hazards.push({
+      id: 'h' + (hazardSeq++),
+      thumb: photo.dataUrl,
+      hazard: r.hazard || '',
+      task: r.task || '',
+      frequency: clamp(parseInt(r.frequency)||1, 1, 5),
+      severity: clamp(parseInt(r.severity)||1, 1, 4),
+      measures: r.measures || '',
+      owner: '',
+      dueDate: ''
+    });
+  }
+  function clamp(v,min,max){ return Math.min(max, Math.max(min, v)); }
+
+  /* ---------------- Results table ---------------- */
+  const resultsBody = document.getElementById('resultsBody');
+  const emptyState = document.getElementById('emptyState');
+
+  document.getElementById('addRowBtn').addEventListener('click', () => {
+    hazards.push({ id:'h'+(hazardSeq++), thumb:'', hazard:'', task:'', frequency:1, severity:1, measures:'', owner:'', dueDate:'' });
+    renderResults();
+  });
+
+  function renderResults(){
+    resultsBody.innerHTML = '';
+    emptyState.style.display = hazards.length ? 'none' : 'block';
+    document.getElementById('resultsTable').style.display = hazards.length ? 'table' : 'none';
+
+    hazards.forEach((h, idx) => {
+      const score = h.frequency * h.severity;
+      const grade = gradeInfo(score);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx+1}</td>
+        <td>${h.thumb ? `<img class="thumb" src="${h.thumb}">` : '-'}</td>
+        <td><textarea rows="2" data-field="hazard">${escapeHtml(h.hazard)}</textarea></td>
+        <td><input type="text" data-field="task" value="${escapeHtml(h.task)}"></td>
+        <td>${freqSelect(h.frequency)}</td>
+        <td>${sevSelect(h.severity)}</td>
+        <td><span class="score-badge" style="background:var(--${grade.cls})">${score}</span></td>
+        <td><span class="score-badge" style="background:var(--${grade.cls})">${grade.label}</span></td>
+        <td><textarea rows="2" data-field="measures">${escapeHtml(h.measures)}</textarea></td>
+        <td><input type="text" data-field="owner" value="${escapeHtml(h.owner)}"></td>
+        <td><input type="date" data-field="dueDate" value="${h.dueDate}"></td>
+        <td><button class="del-row" data-id="${h.id}">✕</button></td>
+      `;
+      resultsBody.appendChild(tr);
+
+      tr.querySelectorAll('[data-field]').forEach(el => {
+        el.addEventListener('input', () => {
+          const field = el.dataset.field;
+          h[field] = field === 'frequency' || field === 'severity' ? parseInt(el.value) : el.value;
+          if(field === 'frequency' || field === 'severity') renderResults();
+        });
+      });
+      tr.querySelector('.del-row').addEventListener('click', () => {
+        hazards = hazards.filter(x => x.id !== h.id);
+        renderResults();
+      });
+    });
+    updateMatrixCounts();
+  }
+
+  function freqSelect(val){
+    let opts = '';
+    for(let i=1;i<=5;i++) opts += `<option value="${i}" ${i===val?'selected':''}>${i}</option>`;
+    return `<select data-field="frequency">${opts}</select>`;
+  }
+  function sevSelect(val){
+    let opts = '';
+    for(let i=1;i<=4;i++) opts += `<option value="${i}" ${i===val?'selected':''}>${i}</option>`;
+    return `<select data-field="severity">${opts}</select>`;
+  }
+  function escapeHtml(s){
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ---------------- Matrix visual ---------------- */
+  const yAxis = document.getElementById('matrixYAxis');
+  const xAxis = document.getElementById('matrixXAxis');
+  const grid = document.getElementById('matrixGrid');
+
+  for(let s=4; s>=1; s--){ const sp=document.createElement('span'); sp.textContent=s; yAxis.appendChild(sp); }
+  for(let l=1; l<=5; l++){ const sp=document.createElement('span'); sp.textContent=l; xAxis.appendChild(sp); }
+
+  const cellRefs = {};
+  for(let sev=4; sev>=1; sev--){
+    for(let like=1; like<=5; like++){
+      const score = sev*like;
+      const grade = gradeInfo(score);
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = `var(--${grade.cls})`;
+      cell.innerHTML = `${score}<span class="cnt">0</span>`;
+      grid.appendChild(cell);
+      cellRefs[sev+'_'+like] = cell;
+    }
+  }
+  function updateMatrixCounts(){
+    Object.values(cellRefs).forEach(c => { c.classList.remove('has'); c.querySelector('.cnt').textContent='0'; });
+    hazards.forEach(h => {
+      const key = h.severity + '_' + h.frequency;
+      const cell = cellRefs[key];
+      if(cell){
+        const cntEl = cell.querySelector('.cnt');
+        cntEl.textContent = (parseInt(cntEl.textContent)||0) + 1;
+        cell.classList.add('has');
+      }
+    });
+  }
+
+  /* ---------------- Export: Excel ---------------- */
+  document.getElementById('exportExcelBtn').addEventListener('click', () => {
+    if(hazards.length === 0){ alert('내보낼 평가 항목이 없습니다.'); return; }
+    const meta = getMeta();
+    const rows = [
+      ['위험성평가표'],
+      ['사업장명', meta.site, '평가일', meta.date, '평가자', meta.assessor, '부서/공정', meta.dept],
+      [],
+      ['No','위험요인','관련작업','빈도','강도','위험성점수','등급','감소대책','담당자','완료예정일']
+    ];
+    hazards.forEach((h,idx) => {
+      const score = h.frequency*h.severity;
+      rows.push([idx+1, h.hazard, h.task, h.frequency, h.severity, score, gradeInfo(score).label, h.measures, h.owner, h.dueDate]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:5},{wch:32},{wch:18},{wch:6},{wch:6},{wch:10},{wch:10},{wch:32},{wch:10},{wch:14}];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '위험성평가표');
+    XLSX.writeFile(wb, `위험성평가표_${meta.date || 'export'}.xlsx`);
+  });
+
+  /* ---------------- Export: PDF (print) ---------------- */
+  document.getElementById('exportPdfBtn').addEventListener('click', () => {
+    if(hazards.length === 0){ alert('내보낼 평가 항목이 없습니다.'); return; }
+    const meta = getMeta();
+    document.getElementById('printMeta').innerHTML =
+      `<span><b>사업장:</b> ${escapeHtml(meta.site)||'-'}</span>
+       <span><b>평가일:</b> ${meta.date||'-'}</span>
+       <span><b>평가자:</b> ${escapeHtml(meta.assessor)||'-'}</span>
+       <span><b>부서/공정:</b> ${escapeHtml(meta.dept)||'-'}</span>`;
+    const printBody = document.getElementById('printBody');
+    printBody.innerHTML = '';
+    hazards.forEach((h,idx) => {
+      const score = h.frequency*h.severity;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${idx+1}</td><td>${escapeHtml(h.hazard)}</td><td>${escapeHtml(h.task)}</td>
+        <td>${h.frequency}</td><td>${h.severity}</td><td>${score}</td><td>${gradeInfo(score).label}</td>
+        <td>${escapeHtml(h.measures)}</td><td>${escapeHtml(h.owner)}</td><td>${h.dueDate||''}</td>`;
+      printBody.appendChild(tr);
+    });
+    window.print();
+  });
+
+  function getMeta(){
+    return {
+      site: document.getElementById('metaSite').value,
+      date: document.getElementById('metaDate').value,
+      assessor: document.getElementById('metaAssessor').value,
+      dept: document.getElementById('metaDept').value
+    };
+  }
+
+  // default date = today
+  document.getElementById('metaDate').value = new Date().toISOString().slice(0,10);
+
+  if(!CONFIG.apiKey){
+    progressNote.textContent = '⚠ automation.html 상단 CONFIG.apiKey에 API 키를 입력해야 AI 분석이 동작합니다.';
+  }
+
+  renderResults();
+</script>
+
+</body>
+</html>
