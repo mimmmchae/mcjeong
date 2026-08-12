@@ -1,97 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>위험성평가 포털</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101a29;
+    --ink-soft:#28394f;
+    --paper:#f5f6f3;
+    --paper-alt:#eceee9;
+    --card:#ffffff;
+    --steel:#5c6773;
+    --line:#dcdfd9;
+    --amber:#ee9f2e;
+    --amber-dark:#c97f1e;
 
-위험성평가 포털
-RISK ASSESSMENT SYSTEM
-홈
-위험성평가 자동화
-게시판
-게시판 바로가기 자동화 시작하기
-산업안전보건법 기반 위험성평가
-위험을 먼저 읽는 조직이 사고를 만들지 않습니다
-유해위험요인 파악부터 감소대책 이행까지, 현장의 위험성평가 전 과정을 자동화하고 한 곳에서 관리하세요.
-위험성평가 자동화 시작 최근 게시글 보기
-12,480+
-누적 평가 건수
-94%
-감소대책 이행률
-3.2일
-평균 처리 소요
-가능성 × 중대성 위험도 매트릭스
-LIVE PREVIEW
-가능성 (LIKELIHOOD) →
-셀 위에 마우스를 올리면 위험도 등급이 표시됩니다.
+    --r1:#4c9a6a;
+    --r2:#93b23f;
+    --r3:#e3bd3f;
+    --r4:#e2833a;
+    --r5:#bf3327;
 
-허용가능
+    --serif-display: "Pretendard", "Noto Sans KR", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
 
-경미
+    --maxw: 1180px;
+  }
 
-보통
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
 
-중대
+  body{
+    margin:0;
+    font-family: var(--serif-display);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
 
-허용불가
-WHY 위험성평가 포털
-평가자의 판단을, 시스템의 속도로
-담당자의 경험에만 의존하던 위험성평가를 데이터와 자동화로 보완합니다.
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none; margin:0; padding:0;}
+  button{font-family:inherit; cursor:pointer;}
 
-유해위험요인 자동 식별
-공정·작업 데이터를 분석해 놓치기 쉬운 잠재 위험요인을 자동으로 추출하고 목록화합니다.
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;
+    background:var(--amber);
+    display:inline-block;
+    border-radius:1px;
+    transform:rotate(45deg);
+  }
 
-위험성 산정 자동화
-가능성과 중대성 기준을 매트릭스에 즉시 대입해 위험도 등급을 계산하고 우선순위를 정렬합니다.
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
 
-감소대책 이력 관리
-조치 현황, 담당자, 재평가 일정을 자동 추적하고 기한이 임박한 항목을 알려줍니다.
-위험성평가 자동화 · 5단계
-위험성평가, 정해진 절차대로 자동 진행됩니다
-산업안전보건법 위험성평가 5단계 절차를 그대로 따르며, 각 단계마다 자동화가 개입해 소요 시간을 줄입니다.
-01
-PARSE
-유해위험요인 파악
-작업 단위를 세분화하여 공정·설비·물질별 유해위험요인을 도출합니다.
-자동 추출 · 작업표준 연동
-02
-SCORE
-위험성 추정
-가능성 × 중대성 매트릭스를 기준으로 위험도 점수를 즉시 계산합니다.
-매트릭스 자동 계산
-03
-DECIDE
-위험성 결정
-허용 가능 여부를 판단하고, 등급에 따라 조치 우선순위를 자동 정렬합니다.
-허용기준 자동 판정
-04
-REDUCE
-감소대책 수립
-공학적·관리적·개인보호구 대책을 위험 유형에 맞춰 자동으로 제안합니다.
-대책 라이브러리 매칭
-05
-SHARE
-문서화 및 공유
-결과를 법정 서식 보고서로 자동 생성하고 게시판을 통해 현장과 공유합니다.
-보고서 자동 생성
-게시판
-공지사항과 자료를 한 곳에서
-정기 교육 안내, 양식 자료, 시스템 업데이트, 현장 문의를 확인하세요.
-공지
-2026년 하반기 위험성평가 정기 교육 안내
-2026.08.10
-자료
-화학물질 취급공정 위험성평가 샘플 양식 배포
-2026.08.05
-업데이트
-위험성평가 자동화 시스템 v2.3 업데이트 안내
-2026.07.29
-질문
-건설현장 고소작업 위험도 산정 기준 문의드립니다
-2026.07.22
-공지
-중대재해처벌법 관련 사업장 자율점검표 안내
-2026.07.15
-게시글 더 보기
-지금 위험성평가를 자동화하세요
-담당자 1인이 반나절이면 전체 공정 평가를 마칠 수 있습니다.
-위험성평가 자동화 시작
-© 2026 위험성평가 포털. 산업안전보건법 기반 위험성평가 지원 시스템.
-홈
-위험성평가 자동화
-게시판
+  /* ---------- Header ---------- */
+  header.site-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(245,246,243,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    transition:box-shadow .25s ease;
+  }
+  header.site-header.scrolled{
+    box-shadow:0 6px 24px -12px rgba(16,26,41,0.25);
+  }
+  .nav-wrap{
+    max-width:var(--maxw); margin:0 auto; padding:0 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-0.01em;}
+  .logo svg{flex-shrink:0;}
+  .logo .logo-sub{
+    font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:500;
+    display:block; letter-spacing:0.02em; margin-top:1px;
+  }
+
+  nav.nav-menu{display:flex; align-items:center; gap:2px;}
+  nav.nav-menu a{
+    position:relative;
+    padding:10px 18px;
+    font-size:15px; font-weight:600; color:var(--ink-soft);
+    border-radius:8px;
+    transition:color .2s ease, background .2s ease;
+  }
+  nav.nav-menu a:hover{color:var(--ink); background:rgba(16,26,41,0.05);}
+  nav.nav-menu a.active{color:var(--ink);}
+  nav.nav-menu a.active::after{
+    content:"";
+    position:absolute; left:18px; right:18px; bottom:5px;
+    height:2px; background:var(--amber);
+    border-radius:2px;
+  }
+
+  .header-right{display:flex; align-items:center; gap:10px;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 20px;
+    font-size:14px; font-weight:700;
+    border-radius:9px;
+    border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:var(--ink); color:#fdfaf3;
+  }
+  .btn-primary:hover{background:var(--amber-dark); transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(201,127,30,0.6);}
+  .btn-ghost{
+    border-color:var(--line); color:var(--ink-soft); background:transparent;
+  }
+  .btn-ghost:hover{border-color:var(--ink-soft); color:var(--ink);}
+
+  .nav-toggle{
+    display:none;
+    width:40px; height:40px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--card);
+    align-items:center; justify-content:center;
+  }
+  .nav-toggle svg{display:block;}
+
+  /* ---------- Hero ---------- */
+  section.hero{
+    padding:76px 0 64px;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero-copy h1{
+    font-size:clamp(32px, 4.2vw, 50px);
+    line-height:1.22;
+    letter-spacing:-0.02em;
+    margin:18px 0 20px;
+    font-weight:800;
+  }
+  .hero-copy h1 .hl{color:var(--amber-dark); position:relative; white-space:nowrap;}
+  .hero-copy p.lead{
+    font-size:17px; color:var(--steel); max-width:46ch; margin:0 0 30px;
+  }
+  .hero-actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:40px;}
+  .btn-lg{padding:14px 24px; font-size:15px; border-radius:10px;}
+
+  .stat-bar{
+    display:flex; gap:0;
+    border-top:1px solid var(--line);
+    padding-top:22px;
+  }
+  .stat{flex:1; padding-right:20px;}
+  .stat + .stat{border-left:1px solid var(--line); padding-left:20px;}
+  .stat .num{
+    font-family:var(--mono); font-weight:700; font-size:22px; color:var(--ink);
+    display:block;
+  }
+  .stat .label{font-size:12.5px; color:var(--steel); margin-top:3px; display:block;}
+
+  /* ---------- Risk Matrix (signature element) ---------- */
+  .matrix-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px 26px 22px;
+    box-shadow:0 30px 60px -30px rgba(16,26,41,0.28);
+    position:relative;
+  }
+  .matrix-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px;}
+  .matrix-head h3{margin:0; font-size:14px; font-weight:700;}
+  .matrix-head span{font-family:var(--mono); font-size:11px; color:var(--steel);}
+
+  .matrix-body{display:grid; grid-template-columns:26px 1fr; gap:10px;}
+  .matrix-yaxis{
+    display:grid; grid-template-rows:repeat(5,1fr); gap:6px;
+    writing-mode:vertical-rl;
+  }
+  .matrix-yaxis span{
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:600;
+  }
+  .matrix-yaxis-label{
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    font-size:10px; font-family:var(--mono); color:var(--steel);
+    text-align:center; letter-spacing:0.08em;
+  }
+
+  .matrix-main{display:flex; flex-direction:column; gap:8px;}
+  .matrix-grid{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
+    position:relative;
+  }
+  .cell{
+    aspect-ratio:1/1;
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12px; font-weight:700; color:rgba(255,255,255,0.92);
+    cursor:default;
+    opacity:0;
+    transform:scale(0.6);
+    animation:cellIn .45s ease forwards;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .cell:hover{transform:scale(1.08); box-shadow:0 8px 18px -6px rgba(16,26,41,0.4); z-index:2;}
+  @keyframes cellIn{to{opacity:1; transform:scale(1);}}
+
+  .matrix-xaxis{display:grid; grid-template-columns:repeat(5,1fr); gap:6px;}
+  .matrix-xaxis span{
+    text-align:center; font-family:var(--mono); font-size:10px; color:var(--steel); font-weight:600;
+  }
+  .matrix-xaxis-label{
+    text-align:center; font-size:10px; font-family:var(--mono); color:var(--steel); letter-spacing:0.08em; margin-top:2px;
+  }
+
+  .matrix-tip{
+    margin-top:16px; padding-top:14px; border-top:1px dashed var(--line);
+    font-size:12.5px; color:var(--steel); min-height:18px;
+  }
+  .matrix-tip b{color:var(--ink); font-weight:700;}
+
+  .matrix-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:12px;}
+  .matrix-legend span{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:10.5px; color:var(--steel); font-family:var(--mono);
+  }
+  .matrix-legend i{width:9px; height:9px; border-radius:2px; display:inline-block;}
+
+  /* ---------- Features ---------- */
+  section.features{padding:78px 0; border-bottom:1px solid var(--line);}
+  .section-head{max-width:640px; margin-bottom:44px;}
+  .section-head h2{font-size:clamp(24px,3vw,32px); margin:14px 0 12px; letter-spacing:-0.01em; font-weight:800;}
+  .section-head p{color:var(--steel); font-size:15.5px; margin:0;}
+
+  .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .feature-card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:28px 24px;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .feature-card.in{opacity:1; transform:translateY(0);}
+  .feature-icon{
+    width:42px; height:42px; border-radius:10px;
+    background:var(--paper-alt); display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px;
+  }
+  .feature-card h3{font-size:16.5px; margin:0 0 8px; font-weight:700;}
+  .feature-card p{font-size:14px; color:var(--steel); margin:0; line-height:1.65;}
+
+  /* ---------- Automation workflow ---------- */
+  section.automation{padding:78px 0; border-bottom:1px solid var(--line); background:var(--paper-alt);}
+  .workflow{display:flex; flex-direction:column;}
+  .step{
+    display:grid; grid-template-columns:88px 1fr; gap:24px;
+    padding:26px 0;
+    border-top:1px solid var(--line);
+    opacity:0; transform:translateX(-14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .step.in{opacity:1; transform:translateX(0);}
+  .step:last-child{border-bottom:1px solid var(--line);}
+  .step .step-num{
+    font-family:var(--mono); font-weight:700; font-size:13px; color:var(--amber-dark);
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .step .step-num em{font-style:normal; font-size:26px; color:var(--ink); display:block;}
+  .step-body h4{margin:0 0 8px; font-size:17px; font-weight:700;}
+  .step-body p{margin:0; color:var(--steel); font-size:14.5px; max-width:62ch;}
+  .step-tag{
+    display:inline-block; margin-top:12px;
+    font-family:var(--mono); font-size:10.5px; color:var(--steel);
+    background:var(--card); border:1px solid var(--line);
+    padding:4px 9px; border-radius:6px;
+  }
+
+  /* ---------- Board ---------- */
+  section.board{padding:78px 0;}
+  .board-list{border-top:1px solid var(--line);}
+  .board-row{
+    display:grid; grid-template-columns:90px 1fr 96px;
+    align-items:center; gap:16px;
+    padding:18px 4px;
+    border-bottom:1px solid var(--line);
+    transition:background .15s ease;
+  }
+  .board-row:hover{background:var(--paper-alt);}
+  .board-tag{
+    font-family:var(--mono); font-size:10.5px; font-weight:700;
+    padding:4px 8px; border-radius:5px; text-align:center;
+    color:#fff;
+  }
+  .board-tag.notice{background:var(--ink-soft);}
+  .board-tag.data{background:var(--r1);}
+  .board-tag.update{background:var(--amber-dark);}
+  .board-tag.qna{background:var(--steel);}
+  .board-title{font-size:15px; font-weight:600; color:var(--ink);}
+  .board-date{font-family:var(--mono); font-size:12px; color:var(--steel); text-align:right;}
+  .board-more{margin-top:22px; display:flex; justify-content:flex-end;}
+
+  /* ---------- CTA band ---------- */
+  section.cta-band{
+    background:var(--ink); color:#f5f6f3;
+    padding:64px 0;
+  }
+  .cta-band .wrap{display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;}
+  .cta-band h2{font-size:clamp(22px,2.6vw,28px); margin:0 0 6px; font-weight:800; letter-spacing:-0.01em;}
+  .cta-band p{margin:0; color:#aab3bf; font-size:14.5px;}
+  .cta-band .btn-primary{background:var(--amber);}
+  .cta-band .btn-primary:hover{background:#ffb84d;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:32px 0; border-top:1px solid var(--line);}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  footer p{margin:0; font-size:12.5px; color:var(--steel);}
+  footer .foot-links{display:flex; gap:18px;}
+  footer .foot-links a{font-size:12.5px; color:var(--steel);}
+  footer .foot-links a:hover{color:var(--ink);}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 920px){
+    .hero-grid{grid-template-columns:1fr; gap:40px;}
+    .feature-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width: 720px){
+    nav.nav-menu{
+      position:fixed; top:72px; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--line);
+      flex-direction:column; align-items:stretch;
+      padding:8px 20px 16px;
+      transform:translateY(-8px); opacity:0; pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+    nav.nav-menu.open{opacity:1; transform:translateY(0); pointer-events:auto;}
+    nav.nav-menu a{padding:14px 6px; border-bottom:1px solid var(--line);}
+    .header-right .btn-ghost{display:none;}
+    .nav-toggle{display:flex;}
+    .step{grid-template-columns:1fr; gap:8px;}
+    .board-row{grid-template-columns:70px 1fr; }
+    .board-date{display:none;}
+    .cta-band .wrap{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="nav-wrap">
+    <a href="#top" class="logo">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M15 3 L27 24 H3 Z" stroke="#101a29" stroke-width="2" stroke-linejoin="round" fill="#f5f6f3"/>
+        <rect x="14" y="11" width="2" height="7" rx="1" fill="#101a29"/>
+        <rect x="14" y="20" width="2" height="2" rx="1" fill="#ee9f2e"/>
+      </svg>
+      <span>
+        위험성평가 포털
+        <span class="logo-sub">RISK ASSESSMENT SYSTEM</span>
+      </span>
+    </a>
+
+    <nav class="nav-menu" id="navMenu">
+      <a href="#top" class="active" data-nav>홈</a>
+      <a href="#automation" data-nav>위험성평가 자동화</a>
+      <a href="#board" data-nav>게시판</a>
+    </nav>
+
+    <div class="header-right">
+      <a href="#board" class="btn btn-ghost">게시판 바로가기</a>
+      <a href="#automation" class="btn btn-primary">자동화 시작하기</a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M2 4h14M2 9h14M2 14h14" stroke="#101a29" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">산업안전보건법 기반 위험성평가</span>
+        <h1>위험을 <span class="hl">먼저 읽는</span> 조직이<br>사고를 만들지 않습니다</h1>
+        <p class="lead">유해위험요인 파악부터 감소대책 이행까지, 현장의 위험성평가 전 과정을 자동화하고 한 곳에서 관리하세요.</p>
+        <div class="hero-actions">
+          <a href="#automation" class="btn btn-primary btn-lg">위험성평가 자동화 시작</a>
+          <a href="#board" class="btn btn-ghost btn-lg">최근 게시글 보기</a>
+        </div>
+        <div class="stat-bar">
+          <div class="stat"><span class="num">12,480+</span><span class="label">누적 평가 건수</span></div>
+          <div class="stat"><span class="num">94%</span><span class="label">감소대책 이행률</span></div>
+          <div class="stat"><span class="num">3.2일</span><span class="label">평균 처리 소요</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="matrix-card">
+          <div class="matrix-head">
+            <h3>가능성 × 중대성 위험도 매트릭스</h3>
+            <span>LIVE PREVIEW</span>
+          </div>
+          <div class="matrix-body">
+            <div class="matrix-yaxis" id="matrixYAxis"></div>
+            <div class="matrix-main">
+              <div class="matrix-grid" id="matrixGrid"></div>
+              <div class="matrix-xaxis" id="matrixXAxis"></div>
+              <div class="matrix-xaxis-label">가능성 (LIKELIHOOD) →</div>
+            </div>
+          </div>
+          <div class="matrix-tip" id="matrixTip">셀 위에 마우스를 올리면 위험도 등급이 표시됩니다.</div>
+          <div class="matrix-legend">
+            <span><i style="background:#4c9a6a"></i>허용가능</span>
+            <span><i style="background:#93b23f"></i>경미</span>
+            <span><i style="background:#e3bd3f"></i>보통</span>
+            <span><i style="background:#e2833a"></i>중대</span>
+            <span><i style="background:#bf3327"></i>허용불가</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">WHY 위험성평가 포털</span>
+        <h2>평가자의 판단을, 시스템의 속도로</h2>
+        <p>담당자의 경험에만 의존하던 위험성평가를 데이터와 자동화로 보완합니다.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10l4 4 10-10" stroke="#101a29" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>유해위험요인 자동 식별</h3>
+          <p>공정·작업 데이터를 분석해 놓치기 쉬운 잠재 위험요인을 자동으로 추출하고 목록화합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="11" width="3" height="6" fill="#101a29"/><rect x="8.5" y="7" width="3" height="10" fill="#101a29"/><rect x="14" y="3" width="3" height="14" fill="#101a29"/></svg>
+          </div>
+          <h3>위험성 산정 자동화</h3>
+          <p>가능성과 중대성 기준을 매트릭스에 즉시 대입해 위험도 등급을 계산하고 우선순위를 정렬합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="2.5" width="12" height="15" rx="1.5" stroke="#101a29" stroke-width="1.6"/><path d="M7 7h6M7 10.5h6M7 14h3.5" stroke="#101a29" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3>감소대책 이력 관리</h3>
+          <p>조치 현황, 담당자, 재평가 일정을 자동 추적하고 기한이 임박한 항목을 알려줍니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTOMATION WORKFLOW -->
+  <section class="automation" id="automation">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">위험성평가 자동화 · 5단계</span>
+        <h2>위험성평가, 정해진 절차대로 자동 진행됩니다</h2>
+        <p>산업안전보건법 위험성평가 5단계 절차를 그대로 따르며, 각 단계마다 자동화가 개입해 소요 시간을 줄입니다.</p>
+      </div>
+      <div class="workflow" id="workflow">
+        <div class="step">
+          <div class="step-num"><em>01</em>PARSE</div>
+          <div class="step-body">
+            <h4>유해위험요인 파악</h4>
+            <p>작업 단위를 세분화하여 공정·설비·물질별 유해위험요인을 도출합니다.</p>
+            <span class="step-tag">자동 추출 · 작업표준 연동</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"><em>02</em>SCORE</div>
+          <div class="step-body">
+            <h4>위험성 추정</h4>
+            <p>가능성 × 중대성 매트릭스를 기준으로 위험도 점수를 즉시 계산합니다.</p>
+            <span class="step-tag">매트릭스 자동 계산</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"><em>03</em>DECIDE</div>
+          <div class="step-body">
+            <h4>위험성 결정</h4>
+            <p>허용 가능 여부를 판단하고, 등급에 따라 조치 우선순위를 자동 정렬합니다.</p>
+            <span class="step-tag">허용기준 자동 판정</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"><em>04</em>REDUCE</div>
+          <div class="step-body">
+            <h4>감소대책 수립</h4>
+            <p>공학적·관리적·개인보호구 대책을 위험 유형에 맞춰 자동으로 제안합니다.</p>
+            <span class="step-tag">대책 라이브러리 매칭</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"><em>05</em>SHARE</div>
+          <div class="step-body">
+            <h4>문서화 및 공유</h4>
+            <p>결과를 법정 서식 보고서로 자동 생성하고 게시판을 통해 현장과 공유합니다.</p>
+            <span class="step-tag">보고서 자동 생성</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOARD -->
+  <section class="board" id="board">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">게시판</span>
+        <h2>공지사항과 자료를 한 곳에서</h2>
+        <p>정기 교육 안내, 양식 자료, 시스템 업데이트, 현장 문의를 확인하세요.</p>
+      </div>
+      <div class="board-list">
+        <div class="board-row">
+          <span class="board-tag notice">공지</span>
+          <span class="board-title">2026년 하반기 위험성평가 정기 교육 안내</span>
+          <span class="board-date">2026.08.10</span>
+        </div>
+        <div class="board-row">
+          <span class="board-tag data">자료</span>
+          <span class="board-title">화학물질 취급공정 위험성평가 샘플 양식 배포</span>
+          <span class="board-date">2026.08.05</span>
+        </div>
+        <div class="board-row">
+          <span class="board-tag update">업데이트</span>
+          <span class="board-title">위험성평가 자동화 시스템 v2.3 업데이트 안내</span>
+          <span class="board-date">2026.07.29</span>
+        </div>
+        <div class="board-row">
+          <span class="board-tag qna">질문</span>
+          <span class="board-title">건설현장 고소작업 위험도 산정 기준 문의드립니다</span>
+          <span class="board-date">2026.07.22</span>
+        </div>
+        <div class="board-row">
+          <span class="board-tag notice">공지</span>
+          <span class="board-title">중대재해처벌법 관련 사업장 자율점검표 안내</span>
+          <span class="board-date">2026.07.15</span>
+        </div>
+      </div>
+      <div class="board-more">
+        <a href="#board" class="btn btn-ghost">게시글 더 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band">
+    <div class="wrap">
+      <div>
+        <h2>지금 위험성평가를 자동화하세요</h2>
+        <p>담당자 1인이 반나절이면 전체 공정 평가를 마칠 수 있습니다.</p>
+      </div>
+      <a href="#automation" class="btn btn-primary btn-lg">위험성평가 자동화 시작</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 위험성평가 포털. 산업안전보건법 기반 위험성평가 지원 시스템.</p>
+    <div class="foot-links">
+      <a href="#top">홈</a>
+      <a href="#automation">위험성평가 자동화</a>
+      <a href="#board">게시판</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header scroll shadow
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 8);
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('open');
+  });
+  navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navMenu.classList.remove('open');
+  }));
+
+  // Active nav highlight by section
+  const sections = ['top','automation','board'].map(id => document.getElementById(id));
+  const navLinks = document.querySelectorAll('[data-nav]');
+  const setActive = (id) => {
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        setActive(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => s && io.observe(s));
+
+  // Reveal on scroll for cards / steps
+  const revealTargets = document.querySelectorAll('.feature-card, .step');
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        revealIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealTargets.forEach(t => revealIO.observe(t));
+
+  // Risk matrix build
+  const levels = [
+    { max:4,  cls:'r1', label:'허용가능' },
+    { max:9,  cls:'r2', label:'경미' },
+    { max:14, cls:'r3', label:'보통' },
+    { max:19, cls:'r4', label:'중대' },
+    { max:25, cls:'r5', label:'허용불가' },
+  ];
+  function riskFor(score){
+    return levels.find(l => score <= l.max);
+  }
+  const grid = document.getElementById('matrixGrid');
+  const tip = document.getElementById('matrixTip');
+  const yAxis = document.getElementById('matrixYAxis');
+  const xAxis = document.getElementById('matrixXAxis');
+
+  for(let s = 5; s >= 1; s--){
+    const span = document.createElement('span');
+    span.textContent = s;
+    yAxis.appendChild(span);
+  }
+  const yLabel = document.createElement('div');
+  yAxis.style.gridColumn = '1';
+
+  for(let l = 1; l <= 5; l++){
+    const span = document.createElement('span');
+    span.textContent = l;
+    xAxis.appendChild(span);
+  }
+
+  let delay = 0;
+  for(let sev = 5; sev >= 1; sev--){
+    for(let like = 1; like <= 5; like++){
+      const score = sev * like;
+      const risk = riskFor(score);
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = `var(--${risk.cls})`;
+      cell.style.animationDelay = `${delay}ms`;
+      cell.textContent = score;
+      cell.addEventListener('mouseenter', () => {
+        tip.innerHTML = `중대성 <b>${sev}</b> × 가능성 <b>${like}</b> = 위험도 <b>${score}</b> — <b>${risk.label}</b> 등급`;
+      });
+      cell.addEventListener('mouseleave', () => {
+        tip.textContent = '셀 위에 마우스를 올리면 위험도 등급이 표시됩니다.';
+      });
+      grid.appendChild(cell);
+      delay += 12;
+    }
+  }
+</script>
+
+</body>
+</html>
